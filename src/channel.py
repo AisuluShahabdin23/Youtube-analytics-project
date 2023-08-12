@@ -42,12 +42,39 @@ class Channel:
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
         youtube = build('youtube', 'v3', developerKey=API_KEY)
-        channel = youtube.channels().list(id=self.__channel_id,  part='snippet,statistics').execute()
+        channel = youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         Channel.printj(channel)
 
     def to_json(self, file_name: str) -> None:
         """Запись информации о канале в file_name.json"""
         youtube = build('youtube', 'v3', developerKey=API_KEY)
         channel = youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
-        with open(os.path.join(file_name), 'w') as file:
-            file.write(json.dumps(channel, indent=2, ensure_ascii=False))
+        with open(file_name, 'w') as json_file:
+            json.dump(channel, json_file, ensure_ascii=False)
+
+    def __str__(self) -> str:
+        return f'{self.title} ({self.url})'
+
+    def __add__(self, other) -> int:
+        """Сложение классов по количеству подписчиков"""
+        return int(self.subs_count) + int(other.subs_count)
+
+    def __sub__(self, other) -> int:
+        """Разность классов по количеству подписчиков"""
+        return int(self.subs_count) - int(other.subs_count)
+
+    def __gt__(self, other) -> bool:
+        """Сравнение классов по количеству подписчиков"""
+        return int(self.subs_count) > int(other.subs_count)
+
+    def __ge__(self, other) -> bool:
+        """Сравнение классов по количеству подписчиков"""
+        return int(self.subs_count) >= int(other.subs_count)
+
+    def __lt__(self, other) -> bool:
+        """Сравнение классов по количеству подписчиков"""
+        return int(self.subs_count) < int(other.subs_count)
+
+    def __le__(self, other) -> bool:
+        """Сравнение классов по количеству подписчиков"""
+        return int(self.subs_count) <= int(other.subs_count)
